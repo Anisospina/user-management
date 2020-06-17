@@ -4,7 +4,8 @@
     "paths": {
       "~components/*": ["./components/*"],
       "~redux": ["./redux"],
-      "~redux/*": ["./redux/*"]
+      "~redux/*": ["./redux/*"],
+      "~services/*": ["./services/*"]
     }
   }
 }

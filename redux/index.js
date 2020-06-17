@@ -5,10 +5,14 @@ import {
   createStore as reduxCreateStore,
 } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import createSagaMiddleware from "redux-saga";
 
+import rootSaga from "../sagas";
 import users from "./users";
 
-const middleware = [];
+const sagaMiddleware = createSagaMiddleware();
+
+const middleware = [sagaMiddleware];
 
 const rootReducer = combineReducers({
   users,
@@ -22,11 +26,13 @@ const rootReducer = combineReducers({
 let store;
 
 const createStore = (state) => {
-  return reduxCreateStore(
+  const newStore = reduxCreateStore(
     rootReducer,
     state,
     composeWithDevTools(applyMiddleware(...middleware))
   );
+  sagaMiddleware.run(rootSaga);
+  return newStore;
 };
 
 export const initializeStore = (state) => {
