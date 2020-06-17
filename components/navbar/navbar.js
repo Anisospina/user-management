@@ -10,7 +10,7 @@ import { useClasses } from "./styles";
 export const Navbar = () => {
   const classes = useClasses();
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Breadcrumbs color="inherit">
           <Link passHref href="/">
