@@ -1,43 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { reduxForm } from "redux-form";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-import ProfileInfo from "./profile-info";
-import Address from "./address";
-import Company from "./company";
+import { PANELS, PANELS_CONFIG, FORM_CONFIG } from "./constants";
+import { Section } from "./section";
 
-const PANELS = {
-  PROFILE_INFO: "profile_info",
-  ADDRESS: "address",
-  COMPANY: "company",
-};
-
-const PANELS_CONFIG = [
-  {
-    id: PANELS.PROFILE_INFO,
-    title: "Profile Info",
-    section: ProfileInfo,
-  },
-  {
-    id: PANELS.ADDRESS,
-    title: "Address",
-    section: Address,
-  },
-  {
-    id: PANELS.COMPANY,
-    title: "Company",
-    section: Company,
-  },
-];
-
-export const UserForm = () => {
+const Form = ({ readOnly, handleSubmit }) => {
   const [panel, setPanel] = useState(PANELS.PROFILE_INFO);
   return (
-    <>
-      {PANELS_CONFIG.map(({ id, title, section: Section }) => (
+    <form onSubmit={handleSubmit}>
+      {PANELS_CONFIG.map(({ id, title }) => (
         <ExpansionPanel
           key={id}
           expanded={panel === id}
@@ -47,10 +23,14 @@ export const UserForm = () => {
             <Typography variant="h6">{title}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Section />
+            <Section readOnly={readOnly} config={FORM_CONFIG[id]} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}
-    </>
+    </form>
   );
 };
+
+export const UserForm = reduxForm({
+  form: "user-form",
+})(Form);
