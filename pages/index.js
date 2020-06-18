@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 
 import { loadUsers } from "~redux/users";
+import { Loading } from "~components/loading";
 
 const StylizedTableCell = withStyles((theme) => ({
   head: {
@@ -33,7 +34,13 @@ const StylizedTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const Home = ({ users = [], loadUsers }) => {
+const RelativePaper = withStyles({
+  root: {
+    position: "relative",
+  },
+})(Paper);
+
+const Home = ({ loading, users = [], loadUsers }) => {
   const router = useRouter();
 
   const handleClick = useCallback(({ id }) => {
@@ -45,7 +52,8 @@ const Home = ({ users = [], loadUsers }) => {
   }, []);
 
   return (
-    <Paper elevation={0}>
+    <RelativePaper elevation={0}>
+      <Loading show={loading} />
       <Box paddingY={5} paddingX={2}>
         <Box marginY={2}>
           <Typography variant="h6">Contact List ({users.length})</Typography>
@@ -85,11 +93,12 @@ const Home = ({ users = [], loadUsers }) => {
           </Table>
         </TableContainer>
       </Box>
-    </Paper>
+    </RelativePaper>
   );
 };
 
 const mapStateToProps = ({ users }) => ({
+  loading: users.loading,
   users: users.data,
 });
 

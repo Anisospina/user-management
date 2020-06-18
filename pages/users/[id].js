@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 
 import { getUserById } from "~redux/users";
 import { UserForm } from "~components/user";
+import { Loading } from "~components/loading";
 
-const Users = ({ user, getUserById }) => {
+const Users = ({ loading, user, getUserById }) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -15,10 +16,16 @@ const Users = ({ user, getUserById }) => {
     }
   }, [id]);
 
-  return user ? <UserForm readOnly initialValues={user} /> : null;
+  return (
+    <>
+      <Loading show={loading} />
+      {user ? <UserForm readOnly initialValues={user} /> : null}
+    </>
+  );
 };
 
 const mapStateToProps = ({ users }) => ({
+  loading: users.loading,
   user: users.user,
 });
 
