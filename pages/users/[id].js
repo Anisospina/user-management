@@ -15,11 +15,7 @@ const Users = ({ user, getUserById }) => {
     }
   }, [id]);
 
-  return (
-    <>
-      <UserForm readOnly data={user} />
-    </>
-  );
+  return user ? <UserForm readOnly initialValues={user} /> : null;
 };
 
 const mapStateToProps = ({ users }) => ({
