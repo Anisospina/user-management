@@ -13,7 +13,7 @@ const App = ({ Component, pageProps }) => {
     <>
       <CssBaseline />
       <Navbar />
-      <Container>
+      <Container maxWidth="md">
         <Box marginY={5}>
           <Provider store={store}>
             <Component {...pageProps} />
