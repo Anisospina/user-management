@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import DefaultErrorPage from "next/error";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -39,9 +40,26 @@ const Users = ({ loading, user, getUserById }) => {
           </Button>
         </Grid>
       </Box>
-      {user ? <UserForm readOnly={!editable} initialValues={user} /> : null}
+      {user ? (
+        <UserForm
+          onSubmit={console.log}
+          readOnly={!editable}
+          initialValues={user}
+        />
+      ) : null}
     </>
   );
+};
+
+Users.propTypes = {
+  loading: PropTypes.bool,
+  users: PropTypes.object,
+  getUserById: PropTypes.func.isRequired,
+};
+
+Users.defaultProps = {
+  loading: false,
+  users: null,
 };
 
 const mapStateToProps = ({ users }) => ({

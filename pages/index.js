@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -12,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/styles/withStyles";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
+import Link from "next/link";
 
 import { loadUsers } from "~redux/users";
 import { Loading } from "~components/loading";
@@ -56,7 +59,20 @@ const Home = ({ loading, users = [], loadUsers }) => {
       <Loading show={loading} />
       <Box paddingY={5} paddingX={2}>
         <Box marginY={2}>
-          <Typography variant="h6">Contact List ({users.length})</Typography>
+          <Grid container justify="space-between">
+            <Grid item>
+              <Typography variant="h6">
+                Contact List ({users.length})
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Link href="/users/new">
+                <Button component="a" variant="contained" color="primary">
+                  Create Contact
+                </Button>
+              </Link>
+            </Grid>
+          </Grid>
         </Box>
         <TableContainer>
           <Table>
