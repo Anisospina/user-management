@@ -44,7 +44,7 @@ const Home = ({ loading, users = [], loadUsers }) => {
   const router = useRouter();
 
   const handleClick = useCallback(({ id }) => {
-    router.push(`/users/${id}`);
+    router.push("/users/[...form]", `/users/${id}`);
   }, []);
 
   useEffect(() => {
