@@ -12,7 +12,9 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import Grid from "@material-ui/core/Grid";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import HelpIcon from "@material-ui/icons/Help";
 
 import { flattenObject, inflateObject } from "~utils/objects";
 import { PANELS, PANELS_CONFIG, FORM_CONFIG } from "./constants";
@@ -46,6 +48,7 @@ const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
   }, [formErrors, hasFormSubmitted]);
 
   const handleFormSubmit = useCallback((event) => {
+    event.preventDefault();
     setFormSubmitted(true);
     handleSubmit(event);
   }, []);
@@ -53,14 +56,16 @@ const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
   return (
     <form onSubmit={handleFormSubmit}>
       {errors.length ? (
-        <Alert severity="error">
-          <AlertTitle>You have some errors in the form</AlertTitle>
-          <ul>
-            {errors.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </Alert>
+        <Box marginY={2}>
+          <Alert severity="error">
+            <AlertTitle>You have some errors in the form</AlertTitle>
+            <ul>
+              {errors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </Alert>
+        </Box>
       ) : null}
       {PANELS_CONFIG.map(({ id, title }) => (
         <ExpansionPanel
@@ -76,11 +81,27 @@ const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
       ))}
-      <Box hidden={readOnly} marginY={1}>
-        <Grid container justify="flex-end">
-          <Button variant="contained" color="primary" type="submit">
-            {isNew ? "Create" : "Update"}
-          </Button>
+      <Box hidden={readOnly} marginY={2}>
+        <Grid container alignItems="flex-end" justify="flex-end">
+          <Grid item>
+            <Box marginRight={2}>
+              <Tooltip
+                arrow
+                interactive
+                title="This form uses a public API which will not save or update any value sended to it but will respond as it if did"
+                placement="top"
+              >
+                <Typography color="textSecondary">
+                  <HelpIcon fontSize="small" />
+                </Typography>
+              </Tooltip>
+            </Box>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="primary" type="submit">
+              {isNew ? "Create" : "Update"}
+            </Button>
+          </Grid>
         </Grid>
       </Box>
     </form>
