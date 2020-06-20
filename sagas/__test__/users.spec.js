@@ -1,9 +1,9 @@
 jest.mock("~services/users");
 
 import { runSaga } from "redux-saga";
-import { call, delay, put } from "redux-saga/effects";
+import { call, delay, put, select } from "redux-saga/effects";
 
-import { getUserById, loadUsers, showMessage } from "../users";
+import { getUserById, loadUsers, saveUser, showMessage } from "../users";
 import {
   clearMessage,
   setLoading,
@@ -13,12 +13,12 @@ import {
 } from "~redux/users";
 import * as users from "~services/users";
 
-const setupRunSaga = async (saga, ...params) => {
+const setupRunSaga = (saga, ...params) => async (state = {}) => {
   const dispatched = [];
   await runSaga(
     {
       dispatch: (action) => dispatched.push(action),
-      getState: () => ({}),
+      getState: () => state,
     },
     saga,
     ...params
@@ -49,7 +49,7 @@ describe("Users saga", () => {
     test("full saga", async () => {
       const TYPE = "test-type";
       const MESSAGE = "test-message";
-      const dispatched = await setupRunSaga(showMessage, TYPE, MESSAGE);
+      const dispatched = await setupRunSaga(showMessage, TYPE, MESSAGE)();
       expect(dispatched).toEqual([setMessage(TYPE, MESSAGE), clearMessage()]);
     });
   });
@@ -84,7 +84,7 @@ describe("Users saga", () => {
     test("full saga", async () => {
       const API_RESULT = "user-data-here";
       users.load.mockReturnValueOnce(API_RESULT);
-      const dispatched = await setupRunSaga(loadUsers);
+      const dispatched = await setupRunSaga(loadUsers)();
       expect(dispatched).toEqual([
         setLoading(true),
         setLoading(false),
@@ -128,11 +128,108 @@ describe("Users saga", () => {
       const API_RESULT = "user-data-here";
       const ID = 100;
       users.get.mockReturnValueOnce(API_RESULT);
-      const dispatched = await setupRunSaga(getUserById, { payload: ID });
+      const dispatched = await setupRunSaga(getUserById, { payload: ID })();
       expect(dispatched).toEqual([
         setLoading(true),
         setLoading(false),
         setUserById(API_RESULT),
+      ]);
+    });
+  });
+
+  describe("save user", () => {
+    test("step by step: create", () => {
+      const isNew = true;
+      const data = "user-form-data";
+      const gen = saveUser({ payload: { isNew, data } });
+
+      expect(gen.next().value).toEqual(
+        put(setLoading(true)),
+        "set loading to true to show the backdrop"
+      );
+
+      expect(gen.next().value).toEqual(
+        call(users.create, data),
+        "call the method to create an user"
+      );
+
+      expect(gen.next().value).toEqual(
+        put(setLoading(false)),
+        "set loading to false to hide the backdrop"
+      );
+
+      const messageGen = gen.next().value;
+
+      expect(messageGen.next().value).toEqual(
+        put(setMessage("success", "User created")),
+        "set loading to false to hide the backdrop"
+      );
+    });
+
+    test("step by step: update", () => {
+      const ID = 100;
+      const isNew = false;
+      const data = "user-form-data";
+      const gen = saveUser({ payload: { isNew, data } });
+
+      expect(gen.next().value).toEqual(
+        put(setLoading(true)),
+        "set loading to true to show the backdrop"
+      );
+
+      // Here we compare stringified objects due to issues
+      // comparing the bare value
+      expect(JSON.stringify(gen.next().value)).toBe(
+        JSON.stringify(select(() => null)),
+        "select the user id"
+      );
+
+      expect(gen.next(ID).value).toEqual(
+        call(users.update, ID, data),
+        "call the method to update an user"
+      );
+
+      expect(gen.next().value).toEqual(
+        put(setLoading(false)),
+        "set loading to false to hide the backdrop"
+      );
+
+      const messageGen = gen.next().value;
+
+      expect(messageGen.next().value).toEqual(
+        put(setMessage("success", "User updated")),
+        "set loading to false to hide the backdrop"
+      );
+    });
+
+    test("step by step error", () => {
+      const gen = saveUser({ payload: {} });
+      gen.next();
+
+      const catchBlock = gen.throw(new Error("test-error")).value;
+
+      expect(catchBlock.next().value).toEqual(
+        put(setMessage("error", "Cannot update the user")),
+        "shows a message when fail to create or update the user"
+      );
+    });
+
+    test("full saga", async () => {
+      const API_RESPONSE = "response-create";
+      const payload = {};
+      users.create.mockReturnValueOnce(API_RESPONSE);
+      const dispatched = await setupRunSaga(saveUser, { payload })({
+        users: {
+          user: {
+            id: 100,
+          },
+        },
+      });
+      expect(dispatched).toEqual([
+        setLoading(true),
+        setLoading(false),
+        setMessage("success", "User updated"),
+        clearMessage(),
       ]);
     });
   });

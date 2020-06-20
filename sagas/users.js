@@ -46,7 +46,7 @@ export function* saveUser({ payload }) {
     if (isNew) {
       const response = yield call(users.create, data);
     } else {
-      const { id } = yield select(({ users }) => users.user);
+      const id = yield select(({ users }) => users.user.id);
       const response = yield call(users.update, id, data);
     }
     yield put(setLoading(false));
