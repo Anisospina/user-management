@@ -10,13 +10,13 @@ import {
 } from "~redux/users";
 import * as users from "~services/users";
 
-function* showMessage(type, message) {
+export function* showMessage(type, message) {
   yield put(setMessage(type, message));
   yield delay(2000);
   yield put(clearMessage());
 }
 
-function* loadUsers() {
+export function* loadUsers() {
   try {
     yield put(setLoading(true));
     const data = yield call(users.load);
@@ -27,7 +27,7 @@ function* loadUsers() {
   }
 }
 
-function* getUserById({ payload: id }) {
+export function* getUserById({ payload: id }) {
   try {
     yield put(setLoading(true));
     const data = yield call(users.get, id);
@@ -38,7 +38,7 @@ function* getUserById({ payload: id }) {
   }
 }
 
-function* saveUser({ payload }) {
+export function* saveUser({ payload }) {
   const { isNew, data } = payload;
   const action = isNew ? "create" : "update";
   try {
