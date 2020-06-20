@@ -10,6 +10,7 @@ export const ACTION_TYPES = {
   SET: "@@users/set",
   GET_BY_ID: "@@users/get-by-id",
   SET_BY_ID: "@@users/set-by-id",
+  SAVE: "@@users/save",
 };
 
 export const setLoading = (payload) => ({
@@ -29,6 +30,14 @@ export const getUserById = (payload) => ({
 export const setUserById = (payload) => ({
   type: ACTION_TYPES.SET_BY_ID,
   payload,
+});
+
+export const saveUser = (isNew, data) => ({
+  type: ACTION_TYPES.SAVE,
+  payload: {
+    isNew,
+    data,
+  },
 });
 
 const reducer = (state = INITIAL_STATE, action) => {

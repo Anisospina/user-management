@@ -3,17 +3,22 @@ import MuiTextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 
 export const TextField = ({
-  offset,
-  layout = {},
   input,
+  layout = {},
+  meta = {},
+  offset,
   readOnly,
   ...props
 }) => {
+  const { touched, error } = meta;
+  const hasError = touched && !!error;
   const gridLayout = useMemo(() => ({ xs: 12, ...layout }), [layout]);
   return (
     <>
       <Grid {...gridLayout} item>
         <MuiTextField
+          error={hasError}
+          helperText={hasError ? error : null}
           size="small"
           fullWidth
           variant="outlined"

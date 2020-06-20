@@ -1,1 +1,1 @@
-export { UserForm } from "./user-form";
+export { UserForm, FORM_NAME } from "./user-form";

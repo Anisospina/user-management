@@ -1,3 +1,5 @@
+import * as yup from "yup";
+
 import { TextField } from "./controls/text-field";
 
 export const PANELS = {
@@ -30,6 +32,7 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { sm: 6 },
+      validation: yup.string().required("The name is required"),
     },
     {
       id: "username",
@@ -38,15 +41,21 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { sm: 6 },
+      validation: yup.string().required("The username is required"),
     },
     {
       id: "phone",
-      label: "Phone",
+      label: "Phone number",
       placeholder: "e.g: 312 345 6789",
       type: "text",
       component: TextField,
       layout: { sm: 6 },
       offset: { xs: 6 },
+      validation: yup
+        .string()
+        .length(10, "The phone number must have 10 numbers")
+        .matches(/[0-9].*/, "The phone number is invalid")
+        .required("The phone number is required"),
     },
     {
       id: "website",
@@ -54,6 +63,10 @@ export const FORM_CONFIG = {
       placeholder: "e.g: www.john-doe.com",
       type: "text",
       component: TextField,
+      validation: yup
+        .string()
+        .notRequired()
+        .matches(/^([\w\-]+(\.[\w\-]+)+[/#?]?.*)?$/, "The website is invalid"),
     },
   ],
   [PANELS.ADDRESS]: [
@@ -64,6 +77,7 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { xs: 12, md: 4 },
+      validation: yup.string().required("The Address is required"),
     },
     {
       id: "address.city",
@@ -72,6 +86,7 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { xs: 12, md: 4 },
+      validation: yup.string().required("The City is required"),
     },
     {
       id: "address.zipcode",
@@ -80,6 +95,11 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { xs: 12, md: 4 },
+      validation: yup
+        .string()
+        .length(5, "The ZIP Code must have 5 numbers")
+        .matches(/[0-9].*/, "The ZIP Code is invalid")
+        .required("The ZIP Code is required"),
     },
   ],
   [PANELS.COMPANY]: [
@@ -90,6 +110,7 @@ export const FORM_CONFIG = {
       type: "text",
       component: TextField,
       layout: { sm: 6 },
+      validation: yup.string().required("The Company name is required"),
     },
     {
       id: "company.catchPhrase",

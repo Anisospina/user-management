@@ -5,7 +5,8 @@
       "~components/*": ["./components/*"],
       "~redux": ["./redux"],
       "~redux/*": ["./redux/*"],
-      "~services/*": ["./services/*"]
+      "~services/*": ["./services/*"],
+      "~utils/*": ["./utils/*"]
     }
   }
 }
