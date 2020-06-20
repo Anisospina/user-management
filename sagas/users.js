@@ -1,4 +1,4 @@
-import { call, put, takeEvery, delay } from "redux-saga/effects";
+import { call, delay, put, select, takeEvery } from "redux-saga/effects";
 
 import {
   ACTION_TYPES,
@@ -39,14 +39,20 @@ function* getUserById({ payload: id }) {
 }
 
 function* saveUser({ payload }) {
+  const { isNew, data } = payload;
+  const action = isNew ? "create" : "update";
   try {
-    const { isNew, data } = payload;
     yield put(setLoading(true));
-    const response = yield call(users.create, data);
+    if (isNew) {
+      const response = yield call(users.create, data);
+    } else {
+      const { id } = yield select(({ users }) => users.user);
+      const response = yield call(users.update, id, data);
+    }
     yield put(setLoading(false));
-    yield showMessage("success", "User created");
+    yield showMessage("success", `User ${action}d`);
   } catch (error) {
-    yield showMessage("error", "Cannot create the user");
+    yield showMessage("error", `Cannot ${action} the user`);
   }
 }
 

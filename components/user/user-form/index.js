@@ -32,7 +32,7 @@ const VALIDATION_SCHEMA = yupObject(
   }, {})
 );
 
-const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
+const Form = ({ formErrors, isNew, readOnly, handleSubmit, pristine }) => {
   const [hasFormSubmitted, setFormSubmitted] = useState(false);
   const [panel, setPanel] = useState(PANELS.PROFILE_INFO);
 
@@ -98,8 +98,13 @@ const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
             </Box>
           </Grid>
           <Grid item>
-            <Button variant="contained" color="primary" type="submit">
-              {isNew ? "Create" : "Update"}
+            <Button
+              disabled={pristine}
+              variant="contained"
+              color="primary"
+              type="submit"
+            >
+              {isNew ? "Create and continue" : "Update"}
             </Button>
           </Grid>
         </Grid>
@@ -110,14 +115,16 @@ const Form = ({ formErrors, isNew, readOnly, handleSubmit }) => {
 
 Form.propTypes = {
   formErrors: PropTypes.object,
-  isNew: PropTypes.bool,
-  readOnly: PropTypes.bool,
   handleSubmit: PropTypes.func.isRequired,
+  isNew: PropTypes.bool,
+  pristine: PropTypes.bool,
+  readOnly: PropTypes.bool,
 };
 
 Form.defaultProps = {
   formErrors: null,
   isNew: false,
+  pristine: true,
   readOnly: false,
 };
 

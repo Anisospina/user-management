@@ -9,8 +9,9 @@ import { UserForm, FORM_NAME } from "~components/user";
 import { saveUser } from "~redux/users";
 
 const New = ({ formErrors, loading, message, saveUser }) => {
-  const handleSubmit = useCallback(async (data) => {
+  const handleSubmit = useCallback(async (data, _, { reset }) => {
     saveUser(true, data);
+    reset();
   }, []);
 
   return (

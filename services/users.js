@@ -13,3 +13,9 @@ export const create = (data) =>
     method: "POST",
     body: JSON.stringify(data),
   }).then((response) => response.json());
+
+export const update = (id, data) =>
+  fetch(`https://jsonplaceholder.typicode.com/users/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  }).then((response) => response.json());
