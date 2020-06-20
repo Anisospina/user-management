@@ -1,11 +1,13 @@
 export const INITIAL_STATE = {
   loading: false,
+  message: null,
   data: [],
   user: null,
 };
 
 export const ACTION_TYPES = {
   SET_LOADING: "@@users/set-loading",
+  SET_MESSAGE: "@@users/set-message",
   LOAD: "@@users/load",
   SET: "@@users/set",
   GET_BY_ID: "@@users/get-by-id",
@@ -16,6 +18,19 @@ export const ACTION_TYPES = {
 export const setLoading = (payload) => ({
   type: ACTION_TYPES.SET_LOADING,
   payload,
+});
+
+export const setMessage = (type, message) => ({
+  type: ACTION_TYPES.SET_MESSAGE,
+  payload: {
+    type,
+    message,
+  },
+});
+
+export const clearMessage = () => ({
+  type: ACTION_TYPES.SET_MESSAGE,
+  payload: null,
 });
 
 export const loadUsers = () => ({ type: ACTION_TYPES.LOAD });
@@ -44,6 +59,8 @@ const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ACTION_TYPES.SET_LOADING:
       return { ...state, loading: action.payload };
+    case ACTION_TYPES.SET_MESSAGE:
+      return { ...state, message: action.payload };
     case ACTION_TYPES.SET:
       return { ...state, data: action.payload };
     case ACTION_TYPES.SET_BY_ID:
